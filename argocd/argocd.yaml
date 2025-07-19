@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
     targetRevision: main
     path: src/cart
   destination:
@@ -25,7 +25,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
     targetRevision: main
     path: src/catalog
   destination:
@@ -44,7 +44,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
     targetRevision: main
     path: src/checkout
   destination:
@@ -63,7 +63,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
     targetRevision: main
     path: src/orders
   destination:
@@ -82,7 +82,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
     targetRevision: main
     path: src/ui
   destination:
