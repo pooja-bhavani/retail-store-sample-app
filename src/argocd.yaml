@@ -50,3 +50,71 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: checkout-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/iemafzalhassan/retail-store-sample-app
+    targetRevision: main
+    path: src/checkout/chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orders-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/iemafzalhassan/retail-store-sample-app
+    targetRevision: main
+    path: src/orders/chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ui-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app
+    targetRevision: main
+    path: src/ui/chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
