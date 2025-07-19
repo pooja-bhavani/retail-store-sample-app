@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
     targetRevision: main
-    path: src/cart/chart
+    path: src/cart
   destination:
     server: https://kubernetes.default.svc
     namespace: cart
