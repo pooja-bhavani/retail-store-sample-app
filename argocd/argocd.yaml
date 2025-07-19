@@ -16,3 +16,79 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: catalog
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    targetRevision: main
+    path: src/catalog
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: catalog
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: checkout
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    targetRevision: main
+    path: src/checkout
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: checkout
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orders
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    targetRevision: main
+    path: src/orders
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: orders
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ui
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    targetRevision: main
+    path: src/ui
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ui
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
