@@ -1,38 +1,72 @@
-name: Build and Push to ECR
+name: CI/CD Multi-Service to AWS ECR
 
 on:
   push:
-    branches: [main]
-
-env: 
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        service: [ui, cart, catalog, checkout, orders]
+        service: [cart, catalog, checkout, orders, ui]
+
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-     
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build, tag, and push Docker image to ECR
+      - name: Create ECR repo if not exists
         run: |
-          IMAGE_URI=${{ env.ECR_REGISTRY }}/${{ matrix.service }}:latest
-          docker build -t $IMAGE_URI ./src/${{ matrix.service }}
-          docker push $IMAGE_URI
+          aws ecr describe-repositories --repository-names retail-${{ matrix.service }} || \
+          aws ecr create-repository --repository-name retail-${{ matrix.service }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | \
+          docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/retail-${{ matrix.service }}:$IMAGE_TAG ./src/app/${{ matrix.service }}
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/retail-${{ matrix.service }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 0
+
+      - name: Push image to ECR
+        run: |
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/retail-${{ matrix.service }}:$IMAGE_TAG
+
+      - name: Update Helm values.yaml
+        run: |
+          sed -i "s|repository: .*|repository: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/retail-${{ matrix.service }}|" src/app/${{ matrix.service }}/chart/values.yaml
+          sed -i "s|tag: .*|tag: $IMAGE_TAG|" src/app/${{ matrix.service }}/chart/values.yaml
+
+      - name: Commit updated values.yaml
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+          git add src/app/${{ matrix.service }}/chart/values.yaml
+          git commit -m "Update image for ${{ matrix.service }} to $IMAGE_TAG" || echo "No changes to commit"
+          git push || echo "Nothing to push"
 
