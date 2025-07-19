@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cart
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pooja-bhavani/retail-store-sample-app.git
+    targetRevision: main
+    path: src/cart
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cart
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
