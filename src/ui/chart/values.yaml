@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: 253490792231.dkr.ecr.ap-south-1.amazonaws.com/retail-ui:latest
+  repository: 253490792231.dkr.ecr.ap-south-1.amazonaws.com/retail-ui:latest 
   pullPolicy: IfNotPresent
   tag: 
 
