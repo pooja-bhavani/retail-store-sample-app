@@ -28,7 +28,7 @@ jobs:
           SERVICES=("ui" "catalog" "cart" "checkout" "orders")
           CHANGED_SERVICES=()
           
-          echo "🔍 Checking for changes in services..."
+          echo "🔍 Checking for changes in services...."
           
           # Check for changes in each service
           for service in "${SERVICES[@]}"; do
