@@ -10,7 +10,7 @@
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%LondheShubham153%2Fretail-store-sample-app%2Frefs%2Fheads%2Fmain%2F.release-please-manifest.json&query=%24%5B%22.%22%5D&label=release)
 
 
-  </div>
+  </div> 
 
   <strong>
   <h2>AWS Containers Retail Sample</h2>
